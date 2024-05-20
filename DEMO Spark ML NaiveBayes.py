@@ -3,12 +3,12 @@
 -----------------------------------------------------------------------------
 
            Naive Bayes : Spam Filtering
-           
+
              Copyright : V2 Maestros @2016
-                    
+
 Problem Statement
 *****************
-The input data is a set of SMS messages that has been classified 
+The input data is a set of SMS messages that has been classified
 as either "ham" or "spam". The goal of the exercise is to build a
  model to identify messages as either ham or spam.
 
@@ -25,6 +25,20 @@ as either "ham" or "spam". The goal of the exercise is to build a
 #import os
 #os.chdir("C:/Personal/V2Maestros/Courses/Big Data Analytics with Spark/Python")
 #os.curdir
+
+"""--------------------------------------------------------------------------
+Init
+-------------------------------------------------------------------------"""
+from pyspark.sql import SparkSession
+from pyspark import SparkContext
+
+# Create a Spark Session
+SpSession = SparkSession.builder.master("local[2]") \
+            .appName("Attilio-Di-Vicino") \
+            .getOrCreate()
+
+# Initialize the Spark context
+SpContext = SpSession.sparkContext
 
 
 """--------------------------------------------------------------------------
@@ -61,10 +75,11 @@ testData.count()
 testData.collect()
 
 #Setup pipeline
-from pyspark.ml.classification import NaiveBayes, NaiveBayesModel
+from pyspark.ml.classification import NaiveBayes
 from pyspark.ml import Pipeline
 from pyspark.ml.feature import HashingTF, Tokenizer
 from pyspark.ml.feature import IDF
+from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 
 #Split into words and then build TF-IDF
 tokenizer = Tokenizer(inputCol="message", outputCol="words")
@@ -84,7 +99,13 @@ prediction=nbModel.transform(testData)
 #Evaluate accuracy
 evaluator = MulticlassClassificationEvaluator(predictionCol="prediction", \
                     labelCol="label",metricName="accuracy")
-evaluator.evaluate(prediction)
+accuracy = evaluator.evaluate(prediction)
 
 #Draw confusion matrics
 prediction.groupBy("label","prediction").count().show()
+
+#Print accuracy
+print(f"Accuracy: {accuracy * 100:.2f}%")
+
+#Stop Spark Contex
+SpContext.stop()
