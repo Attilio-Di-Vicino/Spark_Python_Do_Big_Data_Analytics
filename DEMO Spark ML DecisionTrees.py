@@ -28,6 +28,20 @@ and sepal information.
 #os.curdir
 
 """--------------------------------------------------------------------------
+Init
+-------------------------------------------------------------------------"""
+from pyspark.sql import SparkSession
+from pyspark import SparkContext
+
+# Create a Spark Session
+SpSession = SparkSession.builder.master("local[2]") \
+            .appName("Attilio-Di-Vicino") \
+            .getOrCreate()
+
+# Initialize the Spark context
+SpContext = SpSession.sparkContext
+
+"""--------------------------------------------------------------------------
 Load Data
 -------------------------------------------------------------------------"""
 
@@ -75,7 +89,7 @@ irisNormDf.describe().show()
 
 #Find correlation between predictors and target
 for i in irisNormDf.columns:
-    if not( isinstance(irisNormDf.select(i).take(1)[0][0], unicode)) :
+    if not( isinstance(irisNormDf.select(i).take(1)[0][0], str)) :
         print( "Correlation to Species for ", i, \
                     irisNormDf.stat.corr('IND_SPECIES',i))
 
@@ -127,8 +141,13 @@ predictions.select("prediction","species","label").show()
 #Evaluate accuracy
 evaluator = MulticlassClassificationEvaluator(predictionCol="prediction", \
                     labelCol="label",metricName="accuracy")
-evaluator.evaluate(predictions)      
+accuracy = evaluator.evaluate(predictions)      
 
 #Draw a confusion matrix
 predictions.groupBy("label","prediction").count().show()
 
+#Print accuracy
+print(f"Accuracy: {accuracy * 100:.2f}%")
+
+#Stop Spark Contex
+SpContext.stop()
