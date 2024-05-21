@@ -29,7 +29,7 @@ as either "ham" or "spam". The goal of the exercise is to build a
 """--------------------------------------------------------------------------
 Init
 -------------------------------------------------------------------------"""
-from pyspark.sql import SparkSession
+from pyspark.sql import SparkSession # type: ignore
 
 #Create a Spark Session
 SpSession = SparkSession.builder \
@@ -96,11 +96,11 @@ testData.count()
 testData.collect()
 
 #Setup pipeline
-from pyspark.ml.classification import NaiveBayes
-from pyspark.ml import Pipeline
-from pyspark.ml.feature import HashingTF, Tokenizer
-from pyspark.ml.feature import IDF
-from pyspark.ml.evaluation import MulticlassClassificationEvaluator
+from pyspark.ml.classification import NaiveBayes # type: ignore
+from pyspark.ml import Pipeline # type: ignore
+from pyspark.ml.feature import HashingTF, Tokenizer # type: ignore
+from pyspark.ml.feature import IDF # type: ignore
+from pyspark.ml.evaluation import MulticlassClassificationEvaluator # type: ignore
 
 #Split into words and then build TF-IDF
 tokenizer = Tokenizer(inputCol="message", outputCol="words")
