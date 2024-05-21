@@ -62,14 +62,18 @@ Load Data
 #Load the CSV file into a RDD
 file_name = "SMSSpamCollection.csv"
 gcs_path = "gs://dataproc-staging-us-central1-318082001328-fmcfsyci/SMSSpamCollection.csv"
+#Read a text file from HDFS, a local file system (available on all nodes),
+#or any Hadoop-supported file system URI, and return it as an RDD of Strings.
+#The text files must be encoded as UTF-8.
 smsData = SpContext.textFile(gcs_path,2)
 smsData.cache()
+#Returns all the records as a list of Row.
 smsData.collect()
 
 """--------------------------------------------------------------------------
 Prepare data for ML
 -------------------------------------------------------------------------"""
-
+#Convert into DataFrame start from RDD
 def TransformToVector(inputStr):
     attList=inputStr.split(",")
     smsType= 0.0 if attList[0] == "ham" else 1.0
