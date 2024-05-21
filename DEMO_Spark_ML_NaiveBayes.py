@@ -49,11 +49,9 @@ Print some info
 -------------------------------------------------------------------------"""
 print("Application ID:", SpContext.applicationId)
 print("Master:", SpContext.getConf().get("spark.master"))
-print("Deploy Mode:", SpContext.getConf().get("spark.submit.deployMode"))
 print("Number of Executors:", SpContext.getConf().get("spark.executor.instances", "N/A"))
 print("Executor Memory:", SpContext.getConf().get("spark.executor.memory", "N/A"))
 print("Executor Cores:", SpContext.getConf().get("spark.executor.cores", "N/A"))
-print("Driver Memory:", SpContext.getConf().get("spark.driver.memory", "N/A"))
 
 
 """--------------------------------------------------------------------------
